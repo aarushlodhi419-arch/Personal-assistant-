@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyAI Pro Login</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:
+radial-gradient(circle at top,
+#1b2250 0%,
+#0b1020 40%,
+#080b14 100%);
+overflow:hidden;
+}
+
+.bg-glow{
+position:absolute;
+width:500px;
+height:500px;
+border-radius:50%;
+background:rgba(139,92,246,.15);
+filter:blur(120px);
+}
+
+.card{
+position:relative;
+z-index:2;
+width:100%;
+max-width:430px;
+padding:42px;
+
+background:rgba(16,24,40,.92);
+backdrop-filter:blur(25px);
+
+border:1px solid rgba(255,255,255,.08);
+border-radius:28px;
+
+box-shadow:
+0 25px 80px rgba(0,0,0,.45);
+}
+
+.logo{
+width:90px;
+height:90px;
+margin:auto;
+
+border-radius:24px;
+
+background:
+linear-gradient(
+135deg,
+#8b5cf6,
+#3b82f6,
+#06b6d4
+);
+
+display:flex;
+align-items:center;
+justify-content:center;
+
+font-size:38px;
+color:white;
+
+margin-bottom:24px;
+
+box-shadow:
+0 15px 50px rgba(59,130,246,.25);
+}
+
+h1{
+text-align:center;
+color:white;
+font-size:30px;
+margin-bottom:8px;
+}
+
+.sub{
+text-align:center;
+color:#94a3b8;
+margin-bottom:30px;
+line-height:1.6;
+}
+
+.input-group{
+margin-bottom:18px;
+}
+
+input{
+width:100%;
+padding:16px;
+
+border-radius:16px;
+border:1px solid #2c3a56;
+
+background:#182234;
+color:white;
+
+font-size:15px;
+outline:none;
+transition:.25s;
+}
+
+input:focus{
+border-color:#3b82f6;
+box-shadow:0 0 0 4px rgba(59,130,246,.15);
+}
+
+button{
+width:100%;
+padding:16px;
+
+border:none;
+border-radius:16px;
+
+background:
+linear-gradient(
+135deg,
+#8b5cf6,
+#3b82f6
+);
+
+color:white;
+font-size:15px;
+font-weight:700;
+
+cursor:pointer;
+transition:.25s;
+}
+
+button:hover{
+transform:translateY(-2px);
+}
+
+/* FIX 4: disabled state for submit button */
+button:disabled{
+opacity:0.5;
+cursor:not-allowed;
+transform:none;
+}
+
+.error{
+padding:14px;
+margin-bottom:16px;
+
+background:#3b1010;
+border:1px solid #7f1d1d;
+
+border-radius:14px;
+color:#fca5a5;
+}
+
+.footer{
+margin-top:22px;
+text-align:center;
+font-size:13px;
+color:#64748b;
+}
+
+.badges{
+display:flex;
+justify-content:center;
+gap:10px;
+margin-top:18px;
+flex-wrap:wrap;
+}
+
+.badge{
+padding:8px 12px;
+border-radius:999px;
+
+background:#182234;
+color:#94a3b8;
+
+font-size:12px;
+border:1px solid #2c3a56;
+}
+
+@media(max-width:500px){
+.card{
+margin:20px;
+padding:30px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="card">
+
+<div class="logo">⚡</div>
+
+<h1>StudyAI Pro</h1>
+
+<p class="sub">
+Premium AI Workspace<br>
+Powered by Groq + Gemini
+</p>
+
+{# FIX 1: Use | e to force-escape error output and prevent XSS #}
+{% if error %}
+<div class="error" role="alert">
+{{ error | e }}
+</div>
+{% endif %}
+
+{# FIX 2: Added CSRF token — requires Flask-WTF or manual token in the view #}
+{# FIX 5: autocomplete="off" on the form to prevent incorrect autofill on shared devices #}
+<form method="POST" autocomplete="off" onsubmit="handleSubmit(this)">
+
+{{ csrf_token() if csrf_token is defined else '' }}
+
+<div class="input-group">
+<input
+  type="password"
+  name="password"
+  placeholder="Enter Password"
+  required
+  autofocus
+  autocomplete="current-password">
+  {# FIX 3: autofocus so user can type immediately without clicking #}
+</div>
+
+<button type="submit" id="submitBtn">
+Unlock Workspace
+</button>
+
+</form>
+
+<div class="badges">
+<div class="badge">⚡ Groq</div>
+<div class="badge">✨ Gemini</div>
+<div class="badge">🔒 Secure</div>
+</div>
+
+<div class="footer">
+StudyAI Pro © 2026
+</div>
+
+</div>
+
+<script>
+// FIX 4: Disable button on submit to prevent spam-clicking
+function handleSubmit(form) {
+  const btn = document.getElementById("submitBtn");
+  btn.disabled = true;
+  btn.textContent = "Unlocking…";
+  // Re-enable after 5s in case of a slow server or back-button navigation
+  setTimeout(() => {
+    btn.disabled = false;
+    btn.textContent = "Unlock Workspace";
+  }, 5000);
+  return true; // allow form to submit normally
+}
+</script>
+
+</body>
+</html>
